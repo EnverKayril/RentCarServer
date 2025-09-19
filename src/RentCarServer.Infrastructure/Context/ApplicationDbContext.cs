@@ -41,12 +41,13 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
 
         HttpContextAccessor httpContextAccessor = new();
         string userIdString =
-            httpContextAccessor
-            .HttpContext!
-            .User
-            .Claims
-            .First(p => p.Type == ClaimTypes.NameIdentifier)
-            .Value;
+        //"13D07C0E-0848-4B9D-B1C9-65B436DFBB05";
+        httpContextAccessor
+        .HttpContext!
+        .User
+        .Claims
+        .First(p => p.Type == ClaimTypes.NameIdentifier)
+        .Value;
 
         // string'i Guid'e çeviriyoruz
         Guid userId = Guid.Parse(userIdString);
