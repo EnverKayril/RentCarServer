@@ -12,17 +12,16 @@ public sealed class User : Entity
         UserName userName,
         Password password)
     {
-        FirstName = firstName;
-        LastName = lastName;
-        Email = email;
-        UserName = userName;
-        Password = password;
-        FullName = new(FirstName.Value +" "+ LastName.Value + " (" + Email.Value + ")");
-        IsForgotPasswordCompleted = new(true);
+        SetFirstName(firstName);
+        SetLastName(lastName);
+        SetEmail(email);
+        SetUserName(userName);
+        SetPassword(password);
+        SetFullName();
+        SetIsForgotPasswordCompleted(new(true));
     }
 
-    private User() {}
-
+    private User() { }
     public FirstName FirstName { get; private set; } = default!;
     public LastName LastName { get; private set; } = default!;
     public FullName FullName { get; private set; } = default!;
@@ -33,22 +32,46 @@ public sealed class User : Entity
     public ForgotPasswordDate? ForgotPasswordDate { get; private set; }
     public IsForgotPasswordCompleted IsForgotPasswordCompleted { get; private set; } = default!;
 
+    #region Behaviors
     public bool VerifyPasswordHash(string password)
     {
         using var hmac = new System.Security.Cryptography.HMACSHA512(Password.PasswordSalt);
         var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         return computedHash.SequenceEqual(Password.PasswordHash);
     }
-
     public void CreateForgotPasswordId()
     {
         ForgotPasswordCode = new(Guid.CreateVersion7());
         ForgotPasswordDate = new(DateTimeOffset.Now);
         IsForgotPasswordCompleted = new(false);
     }
-
+    public void SetFirstName(FirstName firstName)
+    {
+        FirstName = firstName;
+    }
+    public void SetLastName(LastName lastName)
+    {
+        LastName = lastName;
+    }
+    public void SetFullName()
+    {
+        FullName = new(FirstName.Value + " " + LastName.Value + " (" + Email.Value + ")");
+    }
+    public void SetEmail(Email email)
+    {
+        Email = email;
+    }
+    public void SetUserName(UserName userName)
+    {
+        UserName = userName;
+    }
+    public void SetIsForgotPasswordCompleted(IsForgotPasswordCompleted isForgotPasswordCompleted)
+    {
+        IsForgotPasswordCompleted = isForgotPasswordCompleted;
+    }
     public void SetPassword(Password newPassword)
     {
         Password = newPassword;
     }
+    #endregion
 }
