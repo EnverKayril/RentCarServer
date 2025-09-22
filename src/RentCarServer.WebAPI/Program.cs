@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.OData;
 using Microsoft.AspNetCore.RateLimiting;
 using RentCarServer.Application;
+using RentCarServer.Application.Services;
 using RentCarServer.Infrastructure;
 using RentCarServer.WebAPI;
 using RentCarServer.WebAPI.Modules;
 using Scalar.AspNetCore;
 using System.Threading.RateLimiting;
+using TS.Result;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,24 @@ builder.Services.AddRateLimiter(cfr =>
     {
         options.PermitLimit = 5;
         options.QueueLimit = 1;
+        options.Window = TimeSpan.FromMinutes(1);
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+    cfr.AddFixedWindowLimiter("forgot-password-fixed", options =>
+    {
+        options.PermitLimit = 2;
+        options.Window = TimeSpan.FromMinutes(5);
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+    cfr.AddFixedWindowLimiter("reset-password-fixed", options =>
+    {
+        options.PermitLimit = 3;
+        options.Window = TimeSpan.FromMinutes(1);
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+    cfr.AddFixedWindowLimiter("check-forgot-password-code-fixed", options =>
+    {
+        options.PermitLimit = 2;
         options.Window = TimeSpan.FromMinutes(1);
         options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
     });
@@ -68,6 +88,10 @@ app.MapControllers()
     .RequireAuthorization();
 app.MapAuth();
 
-app.MapGet("/", () => "hello world").RequireAuthorization();
+app.MapGet("/", async (IMailService mailService) => 
+{
+    await mailService.SendAsync("enverkayril@gmail.com", "test", "bu bir test mailidir", default);
+    return Results.Ok();
+});
 //await app.CreateFirstUser();
 app.Run();

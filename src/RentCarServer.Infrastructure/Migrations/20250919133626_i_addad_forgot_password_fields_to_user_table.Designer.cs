@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentCarServer.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using RentCarServer.Infrastructure.Context;
 namespace RentCarServer.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250919133626_i_addad_forgot_password_fields_to_user_table")]
+    partial class i_addad_forgot_password_fields_to_user_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,7 +111,7 @@ namespace RentCarServer.Infrastructure.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("RentCarServer.Domain.Users.ValueObjects.ForgotPasswordId", "ForgotPasswordId", b1 =>
+                    b.OwnsOne("RentCarServer.Domain.Users.ValueObjects.ForgotPasswordId", "ForgotPassworId", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
@@ -218,15 +221,14 @@ namespace RentCarServer.Infrastructure.Migrations
                     b.Navigation("FirstName")
                         .IsRequired();
 
-                    b.Navigation("ForgotPasswordDate");
+                    b.Navigation("ForgotPassworId");
 
-                    b.Navigation("ForgotPasswordId");
+                    b.Navigation("ForgotPasswordDate");
 
                     b.Navigation("FullName")
                         .IsRequired();
 
-                    b.Navigation("IsForgotPasswordCompleted")
-                        .IsRequired();
+                    b.Navigation("IsForgotPasswordCompleted");
 
                     b.Navigation("LastName")
                         .IsRequired();

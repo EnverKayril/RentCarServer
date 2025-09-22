@@ -40,17 +40,23 @@ internal sealed class ApplicationDbContext : DbContext, IUnitOfWork
         var entries = ChangeTracker.Entries<Entity>();
 
         HttpContextAccessor httpContextAccessor = new();
-        string userIdString =
+        string? userIdString =
         //"13D07C0E-0848-4B9D-B1C9-65B436DFBB05";
         httpContextAccessor
         .HttpContext!
         .User
         .Claims
-        .First(p => p.Type == ClaimTypes.NameIdentifier)
+        .FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier)?
         .Value;
 
-        // string'i Guid'e çeviriyoruz
-        Guid userId = Guid.Parse(userIdString);
+
+        if(userIdString is null)
+        {
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+            // string'i Guid'e çeviriyoruz
+            Guid userId = Guid.Parse(userIdString);
         IdentityId identityId = new(userId);
 
         // Her bir entry için gerekli alanları dolduruyoruz
