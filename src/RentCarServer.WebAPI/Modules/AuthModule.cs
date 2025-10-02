@@ -9,7 +9,7 @@ public static class AuthModule
 {
     public static void MapAuth(this IEndpointRouteBuilder builder)
     {
-        var app = builder.MapGroup("/auth");
+        var app = builder.MapGroup("/auth").WithTags("Auth");
 
         app.MapPost("/login",
             async (LoginCommand request, ISender sender, CancellationToken cancellationToken) =>

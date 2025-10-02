@@ -1,4 +1,8 @@
-﻿namespace RentCarServer.Domain.Abstractions;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using RentCarServer.Domain.Users;
+
+namespace RentCarServer.Domain.Abstractions;
 
 public abstract class Entity
 {
@@ -8,6 +12,7 @@ public abstract class Entity
         Id = new IdentityId(Guid.CreateVersion7());
         IsActive = true;
     }
+
     public IdentityId Id { get; private set; }
     public bool IsActive { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
